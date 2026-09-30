@@ -26,8 +26,8 @@
 
 ## F1: Esqueleto de punta a punta
 ### Core simulado
-- [ ] T12: Prueba de contrato del puerto `CoreAfiliaciones` contra `CoreSimulado` y `CoreFake`, y prueba de que el dataset cubre los casos de NFR-13. — _Hecha cuando: la prueba existe y falla (rojo)._ (ref: NFR-10, NFR-13)
-- [ ] T13: Implementar el puerto, `CoreSimulado`, `CoreFake` y `datos/core-simulado.json`. — _Hecha cuando: T12 en verde._ (ref: FR-1, FR-16, ADR-5)
+- [x] T12: Prueba de contrato del puerto `CoreAfiliaciones` contra `CoreSimulado` y `CoreFake`, y prueba de que el dataset cubre los casos de NFR-13. — _Hecha cuando: la prueba existe y falla (rojo)._ (ref: NFR-10, NFR-13)
+- [x] T13: Implementar el puerto, `CoreSimulado`, `CoreFake` y `datos/core-simulado.json`. — _Hecha cuando: T12 en verde._ (ref: FR-1, FR-16, ADR-5)
 
 ### Registro
 - [ ] T14: Pruebas de integración de `preSignUp`: alta de afiliado activo, rechazo sin autorización, rechazo de inactivo e inexistente. — _Hecha cuando: existen y fallan._ (ref: AC-1, AC-2, AC-3)
