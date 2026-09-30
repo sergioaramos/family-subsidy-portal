@@ -1,36 +1,36 @@
 {
   "_descripcion": "Datos de prueba del core simulado (NFR-13). Edades calculadas al 12 ene 2027, apertura de la convocatoria de prueba.",
   "afiliados": [
-    { "documento": "1001", "nombre": "Ana Gómez", "activo": true, "categoria": "A" },
-    { "documento": "1002", "nombre": "Luis Pérez", "activo": true, "categoria": "B" },
-    { "documento": "1003", "nombre": "Marta Ríos", "activo": true, "categoria": "C" },
-    { "documento": "1004", "nombre": "Juan Ortiz", "activo": true, "categoria": "A" },
-    { "documento": "1005", "nombre": "Julián Arango", "activo": true, "categoria": "B" },
-    { "documento": "1006", "nombre": "Laura Mejía", "activo": true, "categoria": "A" },
-    { "documento": "2002", "nombre": "Pedro Castaño", "activo": false, "categoria": "B" }
+    { "documento": "10010001", "nombre": "Ana Gómez", "activo": true, "categoria": "A" },
+    { "documento": "10020002", "nombre": "Luis Pérez", "activo": true, "categoria": "B" },
+    { "documento": "10030003", "nombre": "Marta Ríos", "activo": true, "categoria": "C" },
+    { "documento": "10040004", "nombre": "Juan Ortiz", "activo": true, "categoria": "A" },
+    { "documento": "10050005", "nombre": "Julián Arango", "activo": true, "categoria": "B" },
+    { "documento": "10060006", "nombre": "Laura Mejía", "activo": true, "categoria": "A" },
+    { "documento": "20020002", "nombre": "Pedro Castaño", "activo": false, "categoria": "B" }
   ],
   "beneficiarios": {
-    "1001": [
+    "10010001": [
       { "documento": "30010", "nombre": "Tomás Arango Gómez", "parentesco": "HIJO", "fechaNacimiento": "2018-03-15" },
       { "documento": "30011", "nombre": "Sara Arango Gómez", "parentesco": "HIJO", "fechaNacimiento": "2022-01-12" },
-      { "documento": "1005", "nombre": "Julián Arango", "parentesco": "CONYUGE", "fechaNacimiento": "1988-01-01" }
+      { "documento": "10050005", "nombre": "Julián Arango", "parentesco": "CONYUGE", "fechaNacimiento": "1988-01-01" }
     ],
-    "1002": [
+    "10020002": [
       { "documento": "30020", "nombre": "Lina Pérez", "parentesco": "HIJO", "fechaNacimiento": "2009-06-06" },
       { "documento": "30021", "nombre": "Mateo Pérez", "parentesco": "HIJO", "fechaNacimiento": "2008-12-01" }
     ],
-    "1003": [
+    "10030003": [
       { "documento": "30030", "nombre": "Daniel Ríos", "parentesco": "HIJO", "fechaNacimiento": "2014-08-20" }
     ],
-    "1004": [
+    "10040004": [
       { "documento": "30040", "nombre": "Emilio Ortiz", "parentesco": "HIJO", "fechaNacimiento": "2017-03-03" },
       { "documento": "30041", "nombre": "Valentina Ortiz", "parentesco": "HIJO", "fechaNacimiento": "2016-10-10" },
       { "documento": "30042", "nombre": "Samuel Ortiz", "parentesco": "HIJO", "fechaNacimiento": "2022-06-01" }
     ],
-    "1005": [
+    "10050005": [
       { "documento": "30010", "nombre": "Tomás Arango Gómez", "parentesco": "HIJO", "fechaNacimiento": "2018-03-15" }
     ],
-    "2002": [
+    "20020002": [
       { "documento": "30050", "nombre": "Andrés Castaño", "parentesco": "HIJO", "fechaNacimiento": "2015-02-02" }
     ]
   }

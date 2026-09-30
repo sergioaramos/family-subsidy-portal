@@ -21,10 +21,10 @@ describe('@NFR-13 cobertura del dataset del core simulado', () => {
   const afiliados = datos.afiliados;
   const hijos = Object.values(datos.beneficiarios).flat().filter((b) => b.parentesco === 'HIJO');
 
-  it('incluye los documentos que usan los escenarios: 1001 activo, 2002 inactivo y 9999 inexistente', () => {
-    expect(afiliados.find((a) => a.documento === '1001')?.activo).toBe(true);
-    expect(afiliados.find((a) => a.documento === '2002')?.activo).toBe(false);
-    expect(afiliados.find((a) => a.documento === '9999')).toBeUndefined();
+  it('incluye los documentos que usan los escenarios: 10010001 activo, 20020002 inactivo y 99999999 inexistente', () => {
+    expect(afiliados.find((a) => a.documento === '10010001')?.activo).toBe(true);
+    expect(afiliados.find((a) => a.documento === '20020002')?.activo).toBe(false);
+    expect(afiliados.find((a) => a.documento === '99999999')).toBeUndefined();
   });
 
   it('incluye afiliados activos de las tres categorías A, B y C', () => {

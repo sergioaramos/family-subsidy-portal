@@ -170,14 +170,14 @@ Característica: Registro y acceso
 
   @AC-1 @FR-1 @FR-2 @FR-6
   Escenario: Registro de un afiliado activo
-    Dado que el documento "1001" pertenece a un afiliado activo en el core
-    Cuando una persona se registra con el documento "1001", un correo y una contraseña válida, aceptando la autorización de datos
+    Dado que el documento "10010001" pertenece a un afiliado activo en el core
+    Cuando una persona se registra con el documento "10010001", un correo y una contraseña válida, aceptando la autorización de datos
     Entonces se crea una cuenta con el rol afiliado pendiente de verificación de correo
     Y queda registrada la fecha y la versión de la autorización aceptada
 
   @AC-2 @FR-6
   Escenario: Registro sin aceptar la autorización de datos
-    Dado que el documento "1001" pertenece a un afiliado activo en el core
+    Dado que el documento "10010001" pertenece a un afiliado activo en el core
     Cuando una persona se registra sin aceptar la autorización de datos
     Entonces el registro no se completa
     Y se le indica que la autorización es obligatoria
@@ -190,9 +190,9 @@ Característica: Registro y acceso
     Y no se crea ninguna cuenta
 
     Ejemplos:
-      | documento | situacion |
-      | 2002      | inactivo  |
-      | 9999      | inexistente |
+      | documento | situacion   |
+      | 20020002  | inactivo    |
+      | 99999999  | inexistente |
 
   @AC-4 @FR-4
   Escenario: Ingreso sin verificar el correo
@@ -203,8 +203,8 @@ Característica: Registro y acceso
 
   @AC-5 @FR-5
   Escenario: Registro con un documento ya registrado
-    Dado que ya existe una cuenta con el documento "1001"
-    Cuando otra persona se registra con el documento "1001"
+    Dado que ya existe una cuenta con el documento "10010001"
+    Cuando otra persona se registra con el documento "10010001"
     Entonces el registro se rechaza
 
   @AC-6 @FR-7
