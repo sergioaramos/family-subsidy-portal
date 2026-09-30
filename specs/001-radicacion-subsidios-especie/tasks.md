@@ -30,10 +30,10 @@
 - [x] T13: Implementar el puerto, `CoreSimulado`, `CoreFake` y `datos/core-simulado.json`. — _Hecha cuando: T12 en verde._ (ref: FR-1, FR-16, ADR-5)
 
 ### Registro
-- [ ] T14: Pruebas de integración de `preSignUp`: alta de afiliado activo, rechazo sin autorización, rechazo de inactivo e inexistente. — _Hecha cuando: existen y fallan._ (ref: AC-1, AC-2, AC-3)
-- [ ] T15: *(Adelantada en T9: atributos, grupos y MFA ya definidos; aquí solo se verifica)* `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
-- [ ] T16: Trigger `preSignUp`: valida el core y la aceptación de la autorización. — _Hecha cuando: T14 en verde._ (ref: FR-1, FR-2, FR-3, FR-6)
-- [ ] T17: Trigger `postConfirmation`: agrega al grupo AFILIADO y guarda la versión y fecha de la autorización. — _Hecha cuando: un usuario confirmado queda en AFILIADO con la autorización guardada._ (ref: FR-2, FR-6, FR-7)
+- [x] T14: Pruebas de integración de `preSignUp`: alta de afiliado activo, rechazo sin autorización, rechazo de inactivo e inexistente. — _Hecha cuando: existen y fallan._ (ref: AC-1, AC-2, AC-3)
+- [x] T15: *(Adelantada en T9: atributos, grupos y MFA ya definidos; aquí solo se verifica)* `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
+- [x] T16: Trigger `preSignUp`: valida el core y la aceptación de la autorización. — _Hecha cuando: T14 en verde._ (ref: FR-1, FR-2, FR-3, FR-6)
+- [x] T17: Trigger `postConfirmation`: agrega al grupo AFILIADO y guarda la versión y fecha de la autorización. — _Hecha cuando: un usuario confirmado queda en AFILIADO con la autorización guardada._ (ref: FR-2, FR-6, FR-7)
 - [ ] T18: `<Authenticator>` con los campos documento y la casilla de autorización de datos. — _Hecha cuando: un registro desde el navegador con el documento 1001 llega al correo de verificación._ (ref: FR-1, FR-4, AC-1)
 
 ### Datos
