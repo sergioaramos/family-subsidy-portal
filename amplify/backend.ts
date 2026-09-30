@@ -1,11 +1,7 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
-import { data } from './data/resource';
 
-/**
- * @see https://docs.amplify.aws/react/build-a-backend/ to add storage, functions, and more
- */
+// Los modelos de datos se agregan en T19 (F1). Las pruebas técnicas de F0 ya se retiraron.
 defineBackend({
   auth,
-  data,
 });

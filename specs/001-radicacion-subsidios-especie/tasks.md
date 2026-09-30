@@ -20,7 +20,7 @@
 - [x] T6: **Prueba técnica R-2.** Modelo de prueba con `disableOperations(['mutations','subscriptions'])`. — _Hecha cuando: el esquema desplegado no expone mutaciones del modelo. Resultado anotado en el plan §7 (o se aplica el plan B)._ (ref: ADR-2)
 - [x] T7: **Prueba técnica R-1.** Escribir un ítem con el SDK usando `owner = sub` y leerlo con el token del dueño mediante `allow.owner().identityClaim('sub')`. — _Hecha cuando: el dueño lo lee y otro usuario no. Resultado anotado en el plan §7._ (ref: ADR-2, FR-29)
 - [x] T8: **Prueba técnica R-3.** Trigger `preTokenGeneration` que quita los grupos a un funcionario sin TOTP, más la configuración de TOTP en Authenticator. — _Hecha cuando: el funcionario sin TOTP entra sin grupos, configura TOTP y en el siguiente ingreso tiene grupos y se le pide el código. Resultado anotado en el plan §7._ (ref: ADR-7, FR-9)
-- [ ] T9: Borrar los modelos de prueba de T6–T8 y dejar el backend limpio. — _Hecha cuando: el sandbox despliega sin recursos de prueba._
+- [x] T9: Borrar los modelos de prueba de T6–T8 y dejar el backend limpio. — _Hecha cuando: el sandbox despliega sin recursos de prueba._
 - [ ] T10: Crear `amplify.yml` con `npm ci`, `npm test` (U, C, I) y `npx ampx pipeline-deploy` en el backend. — _Hecha cuando: si una prueba falla, el build falla._ (ref: ADR-12)
 - [ ] T11: Conectar Amplify Hosting al repo con las ramas `dev` y `main`. — _Hecha cuando: las dos URL responden, cada una con su backend._ (ref: NFR-12)
 
@@ -31,7 +31,7 @@
 
 ### Registro
 - [ ] T14: Pruebas de integración de `preSignUp`: alta de afiliado activo, rechazo sin autorización, rechazo de inactivo e inexistente. — _Hecha cuando: existen y fallan._ (ref: AC-1, AC-2, AC-3)
-- [ ] T15: `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
+- [ ] T15: *(Adelantada en T9: atributos, grupos y MFA ya definidos; aquí solo se verifica)* `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
 - [ ] T16: Trigger `preSignUp`: valida el core y la aceptación de la autorización. — _Hecha cuando: T14 en verde._ (ref: FR-1, FR-2, FR-3, FR-6)
 - [ ] T17: Trigger `postConfirmation`: agrega al grupo AFILIADO y guarda la versión y fecha de la autorización. — _Hecha cuando: un usuario confirmado queda en AFILIADO con la autorización guardada._ (ref: FR-2, FR-6, FR-7)
 - [ ] T18: `<Authenticator>` con los campos documento y la casilla de autorización de datos. — _Hecha cuando: un registro desde el navegador con el documento 1001 llega al correo de verificación._ (ref: FR-1, FR-4, AC-1)
