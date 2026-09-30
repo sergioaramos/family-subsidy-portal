@@ -335,6 +335,8 @@ El pipeline de Amplify corre las pruebas U, C e I en `preBuild`; si fallan, no s
 ### Resultado de las pruebas técnicas (F0)
 - **R-2 confirmada (T6, 2026-09-29):** con `disableOperations(['mutations','subscriptions'])` el esquema desplegado solo expone `get` y `list`; no existen los tipos `Mutation` ni `Subscription`. Se usa tal cual.
 - **R-1 confirmada (T7, 2026-09-29):** un ítem escrito con el SDK con `owner = sub` y `__typename`, `createdAt` y `updatedAt` es legible por su dueño con `allow.owner().identityClaim('sub')` y da `Unauthorized` a otro usuario (y `list` le devuelve 0). Se usa tal cual.
+- **R-3 confirmada (T8, 2026-09-29):** un analista sin TOTP recibe los tokens de acceso e ID **sin grupos** y con `requiere_mfa: "true"`, y AppSync le responde `Unauthorized`. Tras `setUpTOTP` + `verifyTOTPSetup` + `updateMFAPreference(PREFERRED)`, el siguiente ingreso exige `CONFIRM_SIGN_IN_WITH_TOTP_CODE`, y luego los tokens traen `ANALISTA` y la consulta funciona. Se usa tal cual (trigger V1, sin plan B).
+- **Lección de despliegue:** agregar MFA a un user pool **ya creado** falló en CloudFormation ("Invalid AttributeDataType input"). Hubo que recrear el sandbox. La configuración de MFA y de atributos del pool se define **antes** del primer despliegue de cada ambiente (`dev`, `main`).
 
 ## 8. Rollback
 - **Frontend y backend por rama:**

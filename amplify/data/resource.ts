@@ -14,6 +14,11 @@ const schema = a.schema({
     })
     .disableOperations(['mutations', 'subscriptions'])
     .authorization((allow) => [allow.owner().identityClaim('sub').to(['read'])]),
+  // R-3 (T8): solo legible por el grupo ANALISTA.
+  SpikeFuncionario: a
+    .model({ nota: a.string() })
+    .disableOperations(['mutations', 'subscriptions'])
+    .authorization((allow) => [allow.group('ANALISTA').to(['read'])]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
