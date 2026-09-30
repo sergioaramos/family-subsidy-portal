@@ -1,0 +1,25 @@
+# Dependencias y builds
+node_modules/
+dist/
+coverage/
+
+# Amplify Gen 2
+.amplify/
+amplify_outputs*
+amplifyconfiguration*
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Pruebas
+playwright-report/
+test-results/
+tests/**/.dynamodb/
+
+# Sistema y editores
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+*.log
