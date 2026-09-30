@@ -11,14 +11,18 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 export const ENDPOINT_LOCAL = process.env.DYNAMODB_ENDPOINT ?? 'http://localhost:8000';
 
-export const clienteLocal = DynamoDBDocumentClient.from(
-  new DynamoDBClient({
+/** Cliente contra DynamoDB Local (credenciales ficticias: el emulador no las valida). */
+export function crearClienteLocal(): DynamoDBClient {
+  return new DynamoDBClient({
     endpoint: ENDPOINT_LOCAL,
     region: 'us-east-1',
     credentials: { accessKeyId: 'local', secretAccessKey: 'local' },
-  }),
-  { marshallOptions: { removeUndefinedValues: true } },
-);
+  });
+}
+
+export const clienteLocal = DynamoDBDocumentClient.from(crearClienteLocal(), {
+  marshallOptions: { removeUndefinedValues: true },
+});
 
 export interface DefinicionTabla {
   clave: KeySchemaElement[];

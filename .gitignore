@@ -1,5 +1,6 @@
 # Dependencias y builds
 node_modules/
+.npm/
 dist/
 coverage/
 
@@ -27,4 +28,5 @@ tests/**/.dynamodb/
 # Vite
 *.local
 
-# amplify
+# Configuración local del editor/IA
+.claude/

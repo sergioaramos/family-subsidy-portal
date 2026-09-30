@@ -1,122 +1,47 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { Button, Flex, Heading, Loader, Text } from '@aws-amplify/ui-react';
+import { PantallaAcceso } from './auth/PantallaAcceso';
+import { useSesion } from './comun/useSesion';
+import { ConfigurarTotp } from './auth/ConfigurarTotp';
+import { AreaAfiliado } from './afiliado/AreaAfiliado';
+import { AreaAnalista } from './analista/AreaAnalista';
 
-function App() {
-  const [count, setCount] = useState(0)
+/** Rutas por rol (ADR-11). Solo ORGANIZAN la interfaz: cada operación la autoriza el servidor. */
+function Portal({ signOut }: { signOut?: () => void }) {
+  const sesion = useSesion();
+  if (!sesion) return <Loader variation="linear" />;
+
+  const esAfiliado = sesion.grupos.includes('AFILIADO');
+  const esFuncionario = sesion.grupos.some((g) => g === 'ANALISTA' || g === 'COORDINADOR');
+  const inicio = esAfiliado ? '/afiliado' : esFuncionario ? '/analista' : '/sin-rol';
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <Flex direction="column" gap="1rem" padding="1.5rem" maxWidth="60rem" margin="0 auto">
+      <Flex justifyContent="space-between" alignItems="center" wrap="wrap">
+        <Heading level={2}>Portal de subsidios</Heading>
+        <Flex alignItems="center" gap="1rem">
+          <Text fontSize="small">{sesion.correo}</Text>
+          <Button size="small" onClick={signOut}>Cerrar sesión</Button>
+        </Flex>
+      </Flex>
+      {sesion.requiereMfa ? (
+        <ConfigurarTotp correo={sesion.correo} signOut={signOut} />
+      ) : (
+      <Routes>
+        {esAfiliado && <Route path="/afiliado/*" element={<AreaAfiliado sub={sesion.sub} />} />}
+        {esFuncionario && <Route path="/analista/*" element={<AreaAnalista sub={sesion.sub} />} />}
+        <Route path="/sin-rol" element={<Text>Tu cuenta no tiene un rol asignado.</Text>} />
+        <Route path="*" element={<Navigate to={inicio} replace />} />
+      </Routes>
+      )}
+    </Flex>
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <BrowserRouter>
+      <PantallaAcceso>{({ signOut }) => <Portal signOut={signOut} />}</PantallaAcceso>
+    </BrowserRouter>
+  );
+}

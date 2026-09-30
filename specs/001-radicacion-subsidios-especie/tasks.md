@@ -22,57 +22,57 @@
 - [x] T8: **Prueba técnica R-3.** Trigger `preTokenGeneration` que quita los grupos a un funcionario sin TOTP, más la configuración de TOTP en Authenticator. — _Hecha cuando: el funcionario sin TOTP entra sin grupos, configura TOTP y en el siguiente ingreso tiene grupos y se le pide el código. Resultado anotado en el plan §7._ (ref: ADR-7, FR-9)
 - [x] T9: Borrar los modelos de prueba de T6–T8 y dejar el backend limpio. — _Hecha cuando: el sandbox despliega sin recursos de prueba._
 - [x] T10: Crear `amplify.yml` con `npm ci`, `npm test` (U, C) y `npx ampx pipeline-deploy` en el backend, más GitHub Actions con U, C e I (DynamoDB Local como servicio). — _Hecha cuando: si una prueba falla, el build falla._ (ref: ADR-12)
-- [ ] T11: Conectar Amplify Hosting al repo con las ramas `dev` y `main`. — _Hecha cuando: las dos URL responden, cada una con su backend._ (ref: NFR-12)
+- [x] T11: Conectar Amplify Hosting al repo con las ramas `dev` y `main`. — _Hecha cuando: las dos URL responden, cada una con su backend._ (ref: NFR-12) · **Resultado:** `dev` → https://dev.d2adbber7thoa2.amplifyapp.com · `main` (PRODUCTION) → https://main.d2adbber7thoa2.amplifyapp.com
 
 ## F1: Esqueleto de punta a punta
 ### Core simulado
-- [ ] T12: Prueba de contrato del puerto `CoreAfiliaciones` contra `CoreSimulado` y `CoreFake`, y prueba de que el dataset cubre los casos de NFR-13. — _Hecha cuando: la prueba existe y falla (rojo)._ (ref: NFR-10, NFR-13)
-- [ ] T13: Implementar el puerto, `CoreSimulado`, `CoreFake` y `datos/core-simulado.json`. — _Hecha cuando: T12 en verde._ (ref: FR-1, FR-16, ADR-5)
+- [x] T12: Prueba de contrato del puerto `CoreAfiliaciones` contra `CoreSimulado` y `CoreFake`, y prueba de que el dataset cubre los casos de NFR-13. — _Hecha cuando: la prueba existe y falla (rojo)._ (ref: NFR-10, NFR-13)
+- [x] T13: Implementar el puerto, `CoreSimulado`, `CoreFake` y `datos/core-simulado.json`. — _Hecha cuando: T12 en verde._ (ref: FR-1, FR-16, ADR-5)
 
 ### Registro
-- [ ] T14: Pruebas de integración de `preSignUp`: alta de afiliado activo, rechazo sin autorización, rechazo de inactivo e inexistente. — _Hecha cuando: existen y fallan._ (ref: AC-1, AC-2, AC-3)
-- [ ] T15: *(Adelantada en T9: atributos, grupos y MFA ya definidos; aquí solo se verifica)* `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
-- [ ] T16: Trigger `preSignUp`: valida el core y la aceptación de la autorización. — _Hecha cuando: T14 en verde._ (ref: FR-1, FR-2, FR-3, FR-6)
-- [ ] T17: Trigger `postConfirmation`: agrega al grupo AFILIADO y guarda la versión y fecha de la autorización. — _Hecha cuando: un usuario confirmado queda en AFILIADO con la autorización guardada._ (ref: FR-2, FR-6, FR-7)
-- [ ] T18: `<Authenticator>` con los campos documento y la casilla de autorización de datos. — _Hecha cuando: un registro desde el navegador con el documento 1001 llega al correo de verificación._ (ref: FR-1, FR-4, AC-1)
+- [x] T14: Pruebas de integración de `preSignUp`: alta de afiliado activo, rechazo sin autorización, rechazo de inactivo e inexistente. — _Hecha cuando: existen y fallan._ (ref: AC-1, AC-2, AC-3)
+- [x] T15: *(Adelantada en T9: atributos, grupos y MFA ya definidos; aquí solo se verifica)* `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
+- [x] T16: Trigger `preSignUp`: valida el core y la aceptación de la autorización. — _Hecha cuando: T14 en verde._ (ref: FR-1, FR-2, FR-3, FR-6)
+- [x] T17: Trigger `postConfirmation`: agrega al grupo AFILIADO y guarda la versión y fecha de la autorización. — _Hecha cuando: un usuario confirmado queda en AFILIADO con la autorización guardada._ (ref: FR-2, FR-6, FR-7)
+- [x] T18: `<Authenticator>` con los campos documento y la casilla de autorización de datos. — _Hecha cuando: un registro desde el navegador con el documento 1001 llega al correo de verificación._ (ref: FR-1, FR-4, AC-1)
 
 ### Datos
-- [ ] T19: Modelos `Solicitud` y `Convocatoria` de solo lectura, con índices `owner + fechaRadicacion` y `estado + fechaRadicacion` y la autorización del plan §3. — _Hecha cuando: el sandbox expone solo queries para esos modelos._ (ref: FR-28, FR-32, ADR-2, ADR-4)
-- [ ] T20: Tabla `Control` con CDK en `backend.ts`, variables de entorno con los nombres de las tablas y permisos mínimos por función. — _Hecha cuando: el sandbox despliega y la función `comandos` ve las variables._ (ref: ADR-3, ADR-4)
-- [ ] T21: Script `scripts/sembrar-demo.ts` que crea una convocatoria ABIERTA de prueba. — _Hecha cuando: la convocatoria aparece en `getConvocatoriaAbierta`._ (ref: FR-12)
+- [x] T19: Modelos `Solicitud` y `Convocatoria` de solo lectura, con índices `owner + fechaRadicacion` y `estado + fechaRadicacion` y la autorización del plan §3. — _Hecha cuando: el sandbox expone solo queries para esos modelos._ (ref: FR-28, FR-32, ADR-2, ADR-4)
+- [x] T20: Tabla `Control` con CDK en `backend.ts`, variables de entorno con los nombres de las tablas y permisos mínimos por función. — _Hecha cuando: el sandbox despliega y la función `comandos` ve las variables._ (ref: ADR-3, ADR-4) · **Nota:** `comandos` aún no existe; la tabla (TTL, PITR solo en `main`) y los nombres en `amplify_outputs.json` (`custom.tablas`) quedan listos. Variables y permisos por función se verifican en T29.
+- [x] T21: Script `scripts/sembrar-demo.ts` que crea una convocatoria ABIERTA de prueba. — _Hecha cuando: la convocatoria aparece en `getConvocatoriaAbierta`._ (ref: FR-12)
 
 ### Radicación mínima (kit escolar)
-- [ ] T22: Pruebas unitarias de dominio: `afiliadoApto` (inactivo, categoría C) y edad del KIT (4, 5, 17, 18). — _Hecha cuando: existen y fallan._ (ref: AC-17, AC-18)
-- [ ] T23: Implementar las reglas de elegibilidad del dominio. — _Hecha cuando: T22 en verde._ (ref: FR-18, FR-19)
-- [ ] T24: Prueba de `misBeneficiarios` (el afiliado con dos hijos ve dos). — _Hecha cuando: existe y falla._ (ref: AC-15)
-- [ ] T25: Query `misBeneficiarios` en la Lambda `consultas`. — _Hecha cuando: T24 en verde._ (ref: FR-16)
-- [ ] T26: Prueba de `solicitarCargaSoporte`: el POST prefirmado tiene `content-length-range ≤ 5 MB`, los tipos permitidos y la clave `pendientes/<sub>/…`. — _Hecha cuando: existe y falla._ (ref: AC-25)
-- [ ] T27: Mutación `solicitarCargaSoporte` y `defineStorage` sin acceso de cliente a los soportes. — _Hecha cuando: T26 en verde y una carga real desde `curl` con un archivo de 6 MB es rechazada por S3._ (ref: FR-25, FR-26, ADR-10)
-- [ ] T28: Prueba de integración del flujo feliz de `radicarSolicitud` para KIT: queda RADICADA con radicado `SUB-2027-000001` y fecha y hora. — _Hecha cuando: existe y falla._ (ref: AC-16)
-- [ ] T29: Comando `radicarSolicitud` (router por `fieldName`): consulta al core, reglas, consecutivo `SEQ#`, `HeadObject` y traslado a `solicitudes/<id>/`. — _Hecha cuando: T28 en verde._ (ref: FR-17, FR-27)
+- [x] T22: Pruebas unitarias de dominio: `afiliadoApto` (inactivo, categoría C) y edad del KIT (4, 5, 17, 18). — _Hecha cuando: existen y fallan._ (ref: AC-17, AC-18)
+- [x] T23: Implementar las reglas de elegibilidad del dominio. — _Hecha cuando: T22 en verde._ (ref: FR-18, FR-19)
+- [x] T24: Prueba de `misBeneficiarios` (el afiliado con dos hijos ve dos). — _Hecha cuando: existe y falla._ (ref: AC-15)
+- [x] T25: Query `misBeneficiarios` en la Lambda `consultas`. — _Hecha cuando: T24 en verde._ (ref: FR-16)
+- [x] T26: Prueba de `solicitarCargaSoporte`: el POST prefirmado tiene `content-length-range ≤ 5 MB`, los tipos permitidos y la clave `pendientes/<sub>/…`. — _Hecha cuando: existe y falla._ (ref: AC-25)
+- [x] T27: Mutación `solicitarCargaSoporte` y `defineStorage` sin acceso de cliente a los soportes. — _Hecha cuando: T26 en verde y una carga real desde `curl` con un archivo de 6 MB es rechazada por S3._ (ref: FR-25, FR-26, ADR-10)
+- [x] T28: Prueba de integración del flujo feliz de `radicarSolicitud` para KIT: queda RADICADA con radicado `SUB-2027-000001` y fecha y hora. — _Hecha cuando: existe y falla._ (ref: AC-16)
+- [x] T29: Comando `radicarSolicitud` (router por `fieldName`): consulta al core, reglas, consecutivo `SEQ#`, `HeadObject` y traslado a `solicitudes/<id>/`. — _Hecha cuando: T28 en verde._ (ref: FR-17, FR-27)
 
 ### Frontend del afiliado
-- [ ] T30: Página "Radicar": elegir beneficiario y tipo, subir el certificado y radicar. — _Hecha cuando: la radicación desde el navegador muestra el radicado._ (ref: FR-16, FR-27)
-- [ ] T31: Página "Mis solicitudes" con radicado, tipo, beneficiario, estado y fechas. — _Hecha cuando: el afiliado ve la solicitud recién radicada y no ve las de otros._ (ref: FR-28, FR-29, AC-27)
+- [x] T30: Página "Radicar": elegir beneficiario y tipo, subir el certificado y radicar. — _Hecha cuando: la radicación desde el navegador muestra el radicado._ (ref: FR-16, FR-27)
+- [x] T31: Página "Mis solicitudes" con radicado, tipo, beneficiario, estado y fechas. — _Hecha cuando: el afiliado ve la solicitud recién radicada y no ve las de otros._ (ref: FR-28, FR-29, AC-27)
 
 ### Analista mínimo
-- [ ] T32: Script `scripts/crear-funcionario.ts` (AdminCreateUser + AdminAddUserToGroup). — _Hecha cuando: un analista creado con el script entra y ve la bandeja._ (ref: FR-8, AC-7)
-- [ ] T33: Pruebas de integración: orden de la bandeja, tomar, aprobar KIT, rechazar sin motivo y rechazar con motivo. — _Hecha cuando: existen y fallan._ (ref: AC-32, AC-33, AC-38, AC-40, AC-41)
-- [ ] T34: Catálogo de motivos en el dominio y comandos `tomar`, `aprobar` (KIT) y `rechazar`. — _Hecha cuando: T33 en verde._ (ref: FR-32, FR-33, FR-38, FR-41)
-- [ ] T35: Páginas "Bandeja" y "Revisión" con tomar, aprobar y rechazar con motivo. — _Hecha cuando: el analista decide una solicitud desde el navegador y el afiliado ve el nuevo estado._ (ref: FR-32, FR-38, FR-41)
+- [x] T32: Script `scripts/crear-funcionario.ts` (AdminCreateUser + AdminAddUserToGroup). — _Hecha cuando: un analista creado con el script entra y ve la bandeja._ (ref: FR-8, AC-7)
+- [x] T33: Pruebas de integración: orden de la bandeja, tomar, aprobar KIT, rechazar sin motivo y rechazar con motivo. — _Hecha cuando: existen y fallan._ (ref: AC-32, AC-33, AC-38, AC-40, AC-41)
+- [x] T34: Catálogo de motivos en el dominio y comandos `tomar`, `aprobar` (KIT) y `rechazar`. — _Hecha cuando: T33 en verde._ (ref: FR-32, FR-33, FR-38, FR-41)
+- [x] T35: Páginas "Bandeja" y "Revisión" con tomar, aprobar y rechazar con motivo. — _Hecha cuando: el analista decide una solicitud desde el navegador y el afiliado ve el nuevo estado._ (ref: FR-32, FR-38, FR-41)
 - [ ] T36: Desplegar F1 en `dev` y, con un PR, en `main`. — _Hecha cuando: el flujo feliz completo (registro → radicar → aprobar → consultar) funciona en la URL pública de `main`._ (ref: NFR-12)
 
 ## F2: Radicación completa
 - [ ] T37: Pruebas unitarias del computador: categoría A obligatoria y edades 9, 10, 17 y 18. — _Hecha cuando: existen y fallan._ (ref: AC-21, AC-22)
 - [ ] T38: Reglas de dominio del computador. — _Hecha cuando: T37 en verde._ (ref: FR-21, FR-22)
-- [ ] T39: Pruebas de integración de bloqueos:
+- [x] T39: *(Hecha para el KIT: AC-19, AC-20 ×20 y AC-26. AC-23, segundo computador, queda para después de T37–T38)* Pruebas de integración de bloqueos:
   - kit ya radicado por el otro padre;
   - **ambos padres en el mismo instante (`Promise.all`)**;
   - segundo computador del mismo afiliado;
   - re-radicar después de un rechazo.
 
   — _Hecha cuando: existen y fallan._ (ref: AC-19, AC-20, AC-23, AC-26)
-- [ ] T40: Bloqueos `LOCK#KIT` y `LOCK#PC` dentro de la transacción de `radicarSolicitud`, liberados al rechazar; traducción de `TransactionCanceledException` a mensajes de negocio. — _Hecha cuando: T39 en verde, 20 ejecuciones seguidas de AC-20 sin fallos._ (ref: FR-20, FR-23, NFR-7)
+- [x] T40: Bloqueos `LOCK#KIT` y `LOCK#PC` dentro de la transacción de `radicarSolicitud`, liberados al rechazar; traducción de `TransactionCanceledException` a mensajes de negocio. — _Hecha cuando: T39 en verde, 20 ejecuciones seguidas de AC-20 sin fallos._ (ref: FR-20, FR-23, NFR-7)
 - [ ] T41: Prueba de integración de la reserva de documento (duplicado rechazado; reserva vencida reutilizable). — _Hecha cuando: existe y falla._ (ref: AC-5)
 - [ ] T42: Reserva `DOC#` con TTL en `preSignUp` y confirmación en `postConfirmation`; TTL activado en `Control`. — _Hecha cuando: T41 en verde._ (ref: FR-5)
 - [ ] T43: Pruebas de soportes en el servidor: sin certificado, `.docx`, JPG de 6 MB y cuarto archivo. — _Hecha cuando: existen y fallan._ (ref: AC-24, AC-25)
