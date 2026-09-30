@@ -332,6 +332,10 @@ El pipeline de Amplify corre las pruebas U, C e I en `preBuild`; si fallan, no s
 | R-7 | Zona horaria o reloj del servidor mal manejados (fechas límite corridas un día) | Todo con `Clock` inyectado y `America/Bogota`; pruebas con fechas fijas (ADR-14) |
 | R-8 | El alcance es grande para el tiempo de preparación | Fases F0–F6: al terminar F1 hay algo demostrable; F2–F5 suben de nivel sin romper lo anterior |
 
+### Resultado de las pruebas técnicas (F0)
+- **R-2 confirmada (T6, 2026-09-29):** con `disableOperations(['mutations','subscriptions'])` el esquema desplegado solo expone `get` y `list`; no existen los tipos `Mutation` ni `Subscription`. Se usa tal cual.
+- **R-1 confirmada (T7, 2026-09-29):** un ítem escrito con el SDK con `owner = sub` y `__typename`, `createdAt` y `updatedAt` es legible por su dueño con `allow.owner().identityClaim('sub')` y da `Unauthorized` a otro usuario (y `list` le devuelve 0). Se usa tal cual.
+
 ## 8. Rollback
 - **Frontend y backend por rama:**
   - Amplify Hosting permite **volver a desplegar un build anterior** desde la consola.
