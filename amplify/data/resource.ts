@@ -109,6 +109,25 @@ const schema = a.schema({
     .returns(a.ref('CargaSoporte'))
     .authorization((allow) => [allow.group('AFILIADO')])
     .handler(a.handler.function(comandos)),
+
+  SolicitudRadicada: a.customType({
+    id: a.id().required(),
+    radicado: a.string().required(),
+    estado: a.ref('EstadoSolicitud').required(),
+    fechaRadicacion: a.datetime().required(),
+  }),
+
+  /** FR-17 a FR-27: radica una solicitud. El afiliado y su documento salen del token, no de los argumentos. */
+  radicarSolicitud: a
+    .mutation()
+    .arguments({
+      tipo: a.ref('TipoSubsidio').required(),
+      beneficiarioDocumento: a.string().required(),
+      soportes: a.string().array().required(),
+    })
+    .returns(a.ref('SolicitudRadicada'))
+    .authorization((allow) => [allow.group('AFILIADO')])
+    .handler(a.handler.function(comandos)),
 });
 
 export type Schema = ClientSchema<typeof schema>;

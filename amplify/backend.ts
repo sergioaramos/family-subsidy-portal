@@ -63,6 +63,38 @@ backend.comandos.resources.lambda.addToRolePolicy(
     resources: [bucket.arnForObjects('pendientes/*'), bucket.arnForObjects('solicitudes/*')],
   }),
 );
+// Sin ListBucket, HeadObject de un objeto inexistente responde 403 (no 404): S3 no revela si existe.
+// Se limita al prefijo pendientes/ para que `existe()` distinga "no existe" de "sin permiso".
+backend.comandos.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    actions: ['s3:ListBucket'],
+    resources: [bucket.bucketArn],
+    conditions: { StringLike: { 's3:prefix': ['pendientes/*'] } },
+  }),
+);
+
+// ── Permisos de la Lambda comandos sobre las tablas (mínimo privilegio: acción por tabla) ──────
+const tablaConvocatoria = backend.data.resources.tables['Convocatoria'];
+const tablaSolicitud = backend.data.resources.tables['Solicitud'];
+backend.comandos.addEnvironment('USER_POOL_ID', pool.userPoolId);
+backend.comandos.addEnvironment('TABLA_CONTROL', tablaControl.tableName);
+backend.comandos.addEnvironment('TABLA_CONVOCATORIA', tablaConvocatoria.tableName);
+backend.comandos.addEnvironment('TABLA_SOLICITUD', tablaSolicitud.tableName);
+backend.comandos.resources.lambda.addToRolePolicy(
+  new PolicyStatement({ actions: ['cognito-idp:AdminGetUser'], resources: [pool.userPoolArn] }),
+);
+backend.comandos.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    actions: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem'], // marcador, bloqueos, contadores
+    resources: [tablaControl.tableArn],
+  }),
+);
+backend.comandos.resources.lambda.addToRolePolicy(
+  new PolicyStatement({ actions: ['dynamodb:GetItem'], resources: [tablaConvocatoria.tableArn] }), // solo leer
+);
+backend.comandos.resources.lambda.addToRolePolicy(
+  new PolicyStatement({ actions: ['dynamodb:PutItem'], resources: [tablaSolicitud.tableArn] }), // solo crear (F1)
+);
 
 // Nombres de tablas para los scripts de operación (sembrar-demo, cargar-festivos).
 // No son secretos: el acceso lo controla IAM, no conocer el nombre.
