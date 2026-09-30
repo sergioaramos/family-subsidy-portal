@@ -27,3 +27,6 @@ tests/**/.dynamodb/
 
 # Vite
 *.local
+
+# Configuración local del editor/IA
+.claude/

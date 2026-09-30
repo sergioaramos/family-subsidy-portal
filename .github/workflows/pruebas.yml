@@ -37,5 +37,9 @@ jobs:
         run: npm test
       - name: Integración (DynamoDB Local)
         run: npm run test:int
+      # amplify_outputs.json lo genera el despliegue de cada ambiente y no se versiona.
+      # Para verificar que el frontend compila basta un archivo mínimo (no se despliega nada).
+      - name: amplify_outputs.json de relleno
+        run: echo '{"version":"1.5"}' > amplify_outputs.json
       - name: Build del frontend
         run: npm run build
