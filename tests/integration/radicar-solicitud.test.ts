@@ -3,6 +3,7 @@ import { GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { clienteLocal, crearTablaTemporal } from './helpers/dynamo';
 import { radicarSolicitud, type AlmacenSoportes } from '../../amplify/shared/casos-uso/radicar-solicitud';
 import { CoreFake } from '../fakes/core-fake';
+import { HIJOS_VOLUMEN } from './helpers/escenario';
 
 /** Almacén de soportes en memoria: simula S3 (existencia y traslado de objetos). */
 class AlmacenFake implements AlmacenSoportes {
@@ -24,6 +25,7 @@ const core = new CoreFake({
     '10010001': [
       { documento: '30010', nombre: 'Tomás', parentesco: 'HIJO', fechaNacimiento: '2018-03-15' },
       { documento: '30099', nombre: 'Luisa', parentesco: 'HIJO', fechaNacimiento: '2016-05-05' },
+      ...HIJOS_VOLUMEN,
     ],
   },
 });
@@ -107,17 +109,18 @@ describe('@AC-16 radicarSolicitud: radicación exitosa de un kit escolar', () =>
     expect(r.radicado).toBe('SUB-2027-000002');
   });
 
-  // En F1 no hay bloqueo de "un kit por niño" (llega en T39-T40); por eso aquí se repite el beneficiario.
-  it('20 radicaciones simultáneas reciben 20 consecutivos distintos (contador atómico)', async () => {
-    const claves = Array.from({ length: 20 }, (_, i) => `pendientes/sub-ana/c${i}-cert.pdf`);
-    claves.forEach((c) => almacen.objetos.add(c));
+  it('20 radicaciones simultáneas (20 niños distintos) reciben 20 consecutivos distintos (contador atómico)', async () => {
     const resultados = await Promise.all(
-      claves.map((c) =>
-        radicarSolicitud({ sub: 'sub-ana', documentoAfiliado: '10010001', tipo: 'KIT_ESCOLAR', beneficiarioDocumento: '30010', soportes: [c] }, deps()),
-      ),
+      Array.from({ length: 20 }, (_, i) => {
+        const clave = `pendientes/sub-ana/c${i}-cert.pdf`;
+        almacen.objetos.add(clave);
+        return radicarSolicitud(
+          { sub: 'sub-ana', documentoAfiliado: '10010001', tipo: 'KIT_ESCOLAR', beneficiarioDocumento: String(40000 + i), soportes: [clave] },
+          deps(),
+        );
+      }),
     );
-    const radicados = resultados.map((r) => r.radicado);
-    expect(new Set(radicados).size).toBe(20);
+    expect(new Set(resultados.map((r) => r.radicado)).size).toBe(20);
   });
 
   it('rechaza un soporte que no está en la carpeta del afiliado', async () => {

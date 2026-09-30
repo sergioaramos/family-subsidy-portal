@@ -1,10 +1,13 @@
-import { UpdateCommand, type DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { GetCommand, TransactWriteCommand, UpdateCommand, type DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { claveBloqueoKit } from '../dominio/bloqueos';
 import { validarMotivoRechazo } from '../dominio/motivos';
 import { ErrorNegocio } from './radicar-solicitud';
 
 export interface DepsRevision {
   db: DynamoDBDocumentClient;
   tablaSolicitud: string;
+  /** Tabla Control: al rechazar se libera el bloqueo del niño (FR-20, Q8). */
+  tablaControl: string;
   reloj: () => Date;
 }
 
@@ -74,20 +77,59 @@ export async function aprobarSolicitud(e: { sub: string; id: string }, d: DepsRe
   return { id: e.id, estado: 'APROBADA' as const };
 }
 
-/** FR-35, FR-41: rechazo con motivo del catálogo y observación ("Otro" la exige). */
+/**
+ * FR-35, FR-41: rechazo con motivo del catálogo y observación ("Otro" la exige).
+ * TRANSACCIÓN: marca RECHAZADA y libera el bloqueo del niño, para que se pueda volver a radicar (Q8, AC-26).
+ */
 export async function rechazarSolicitud(
   e: { sub: string; id: string; motivo: string; observacion: string },
   d: DepsRevision,
 ) {
   const error = validarMotivoRechazo(e.motivo, e.observacion);
   if (error) throw new ErrorNegocio(error);
-  await actualizarSi(
-    d,
-    e.id,
-    '#estado = :enRevision AND #asignado = :sub',
-    { estado: 'RECHAZADA', motivoRechazo: e.motivo, observacion: e.observacion.trim() },
-    { ':enRevision': 'EN_REVISION', ':sub': e.sub },
-    NO_ASIGNADA,
-  );
+
+  const { Item: s } = await d.db.send(new GetCommand({ TableName: d.tablaSolicitud, Key: { id: e.id } }));
+  if (!s) throw new ErrorNegocio(NO_ASIGNADA);
+
+  try {
+    await d.db.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          {
+            Update: {
+              TableName: d.tablaSolicitud,
+              Key: { id: e.id },
+              UpdateExpression:
+                'SET #estado = :rechazada, motivoRechazo = :motivo, observacion = :obs, updatedAt = :ahora, #version = #version + :uno',
+              // La condición se vuelve a evaluar AQUÍ: lo leído arriba solo sirve para armar la llave del bloqueo.
+              ConditionExpression: '#estado = :enRevision AND analistaAsignado = :sub',
+              ExpressionAttributeNames: { '#estado': 'estado', '#version': 'version' },
+              ExpressionAttributeValues: {
+                ':rechazada': 'RECHAZADA',
+                ':motivo': e.motivo,
+                ':obs': e.observacion.trim(),
+                ':ahora': d.reloj().toISOString(),
+                ':uno': 1,
+                ':enRevision': 'EN_REVISION',
+                ':sub': e.sub,
+              },
+            },
+          },
+          {
+            Delete: {
+              TableName: d.tablaControl,
+              Key: { pk: claveBloqueoKit(s.convocatoriaId, s.beneficiarioDocumento) },
+              // Solo se borra si es el bloqueo DE ESTA solicitud (o si no existe: datos anteriores a los bloqueos).
+              ConditionExpression: 'attribute_not_exists(pk) OR solicitudId = :id',
+              ExpressionAttributeValues: { ':id': e.id },
+            },
+          },
+        ],
+      }),
+    );
+  } catch (err) {
+    if ((err as { name?: string }).name === 'TransactionCanceledException') throw new ErrorNegocio(NO_ASIGNADA);
+    throw err;
+  }
   return { id: e.id, estado: 'RECHAZADA' as const };
 }

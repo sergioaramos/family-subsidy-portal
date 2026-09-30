@@ -55,7 +55,7 @@ export const handler = async (event: EventoAmplify): Promise<unknown> => {
     case 'rechazarSolicitud': {
       // El analista es el del TOKEN: nadie puede decidir a nombre de otro.
       const a = event.arguments as { id: string; motivo?: string; observacion?: string | null };
-      const deps = { db, tablaSolicitud: TABLA_SOLICITUD, reloj: () => new Date() };
+      const deps = { db, tablaSolicitud: TABLA_SOLICITUD, tablaControl: TABLA_CONTROL, reloj: () => new Date() };
       const base = { sub: event.identity.sub, id: a.id };
       if (event.fieldName === 'tomarSolicitud') return tomarSolicitud(base, deps);
       if (event.fieldName === 'aprobarSolicitud') return aprobarSolicitud(base, deps);

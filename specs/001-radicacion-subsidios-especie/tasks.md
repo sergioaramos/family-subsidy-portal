@@ -65,14 +65,14 @@
 ## F2: Radicación completa
 - [ ] T37: Pruebas unitarias del computador: categoría A obligatoria y edades 9, 10, 17 y 18. — _Hecha cuando: existen y fallan._ (ref: AC-21, AC-22)
 - [ ] T38: Reglas de dominio del computador. — _Hecha cuando: T37 en verde._ (ref: FR-21, FR-22)
-- [ ] T39: Pruebas de integración de bloqueos:
+- [x] T39: *(Hecha para el KIT: AC-19, AC-20 ×20 y AC-26. AC-23, segundo computador, queda para después de T37–T38)* Pruebas de integración de bloqueos:
   - kit ya radicado por el otro padre;
   - **ambos padres en el mismo instante (`Promise.all`)**;
   - segundo computador del mismo afiliado;
   - re-radicar después de un rechazo.
 
   — _Hecha cuando: existen y fallan._ (ref: AC-19, AC-20, AC-23, AC-26)
-- [ ] T40: Bloqueos `LOCK#KIT` y `LOCK#PC` dentro de la transacción de `radicarSolicitud`, liberados al rechazar; traducción de `TransactionCanceledException` a mensajes de negocio. — _Hecha cuando: T39 en verde, 20 ejecuciones seguidas de AC-20 sin fallos._ (ref: FR-20, FR-23, NFR-7)
+- [x] T40: Bloqueos `LOCK#KIT` y `LOCK#PC` dentro de la transacción de `radicarSolicitud`, liberados al rechazar; traducción de `TransactionCanceledException` a mensajes de negocio. — _Hecha cuando: T39 en verde, 20 ejecuciones seguidas de AC-20 sin fallos._ (ref: FR-20, FR-23, NFR-7)
 - [ ] T41: Prueba de integración de la reserva de documento (duplicado rechazado; reserva vencida reutilizable). — _Hecha cuando: existe y falla._ (ref: AC-5)
 - [ ] T42: Reserva `DOC#` con TTL en `preSignUp` y confirmación en `postConfirmation`; TTL activado en `Control`. — _Hecha cuando: T41 en verde._ (ref: FR-5)
 - [ ] T43: Pruebas de soportes en el servidor: sin certificado, `.docx`, JPG de 6 MB y cuarto archivo. — _Hecha cuando: existen y fallan._ (ref: AC-24, AC-25)

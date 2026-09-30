@@ -85,7 +85,8 @@ backend.comandos.resources.lambda.addToRolePolicy(
 );
 backend.comandos.resources.lambda.addToRolePolicy(
   new PolicyStatement({
-    actions: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem'], // marcador, bloqueos, contadores
+    // Marcador, contadores y bloqueos. DeleteItem: liberar el bloqueo del niño al rechazar (Q8).
+    actions: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem', 'dynamodb:DeleteItem'],
     resources: [tablaControl.tableArn],
   }),
 );
@@ -94,7 +95,7 @@ backend.comandos.resources.lambda.addToRolePolicy(
 );
 backend.comandos.resources.lambda.addToRolePolicy(
   // Crear (radicar) y actualizar con condición (tomar, aprobar, rechazar). Sin DeleteItem: nada se borra.
-  new PolicyStatement({ actions: ['dynamodb:PutItem', 'dynamodb:UpdateItem'], resources: [tablaSolicitud.tableArn] }),
+  new PolicyStatement({ actions: ['dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:UpdateItem'], resources: [tablaSolicitud.tableArn] }),
 );
 
 // Nombres de tablas para los scripts de operación (sembrar-demo, cargar-festivos).

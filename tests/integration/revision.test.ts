@@ -6,14 +6,15 @@ import { MOTIVOS_RECHAZO } from '../../amplify/shared/dominio/motivos';
 
 describe('revisión del analista (F1)', () => {
   let tabla: Awaited<ReturnType<typeof crearTablaTemporal>>;
+  let control: Awaited<ReturnType<typeof crearTablaTemporal>>;
   const reloj = () => new Date('2027-01-18T15:00:00Z');
-  const deps = () => ({ db: clienteLocal, tablaSolicitud: tabla.nombre, reloj });
+  const deps = () => ({ db: clienteLocal, tablaSolicitud: tabla.nombre, tablaControl: control.nombre, reloj });
   const leer = async (id: string) =>
     (await clienteLocal.send(new GetCommand({ TableName: tabla.nombre, Key: { id } }))).Item!;
   const sembrar = (id: string, extra: Record<string, unknown> = {}) =>
     clienteLocal.send(new PutCommand({
       TableName: tabla.nombre,
-      Item: { id, tipo: 'KIT_ESCOLAR', estado: 'RADICADA', version: 1, fechaRadicacion: '2027-01-15T19:05:00.000Z', ...extra },
+      Item: { id, tipo: 'KIT_ESCOLAR', estado: 'RADICADA', version: 1, fechaRadicacion: '2027-01-15T19:05:00.000Z', convocatoriaId: 'conv-2027', beneficiarioDocumento: '30010', ...extra },
     }));
 
   beforeAll(async () => {
@@ -21,8 +22,12 @@ describe('revisión del analista (F1)', () => {
       clave: [{ AttributeName: 'id', KeyType: 'HASH' }],
       atributos: [{ AttributeName: 'id', AttributeType: 'S' }],
     });
+    control = await crearTablaTemporal('control', {
+      clave: [{ AttributeName: 'pk', KeyType: 'HASH' }],
+      atributos: [{ AttributeName: 'pk', AttributeType: 'S' }],
+    });
   });
-  afterAll(async () => tabla?.borrar());
+  afterAll(async () => Promise.all([tabla?.borrar(), control?.borrar()]));
   beforeEach(async () => {
     await sembrar('s1');
   });

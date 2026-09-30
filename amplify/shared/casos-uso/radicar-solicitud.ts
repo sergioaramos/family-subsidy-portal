@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
-import { GetCommand, PutCommand, UpdateCommand, type DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { GetCommand, TransactWriteCommand, UpdateCommand, type DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import type { CoreAfiliaciones } from '../puertos/core-afiliaciones';
 import { fechaEnBogota, verificarAfiliado, verificarKitEscolar } from '../dominio/elegibilidad';
 import { formatoRadicado } from '../dominio/radicado';
+import { claveBloqueoKit, MENSAJE_BENEFICIARIO_CON_SOLICITUD } from '../dominio/bloqueos';
 
 /** Almacén de soportes (S3 en producción, un fake en las pruebas). */
 export interface AlmacenSoportes {
@@ -75,6 +76,12 @@ export async function radicarSolicitud(e: EntradaRadicar, d: DepsRadicar) {
     if (!clave.startsWith(prefijo) || !(await d.almacen.existe(clave))) throw new ErrorNegocio('Soporte no válido');
   }
 
+  // 5b. Aviso temprano: si el niño ya tiene solicitud, no se gasta un consecutivo.
+  //     (La GARANTÍA la da la transacción del paso 7; esto solo evita huecos en el caso común.)
+  const bloqueo = claveBloqueoKit(convocatoriaId!, beneficiario.documento);
+  const yaTiene = await d.db.send(new GetCommand({ TableName: d.tablas.control, Key: { pk: bloqueo } }));
+  if (yaTiene.Item) throw new ErrorNegocio(MENSAJE_BENEFICIARIO_CON_SOLICITUD);
+
   // 6. Consecutivo ATÓMICO: DynamoDB suma y devuelve el nuevo valor en una sola operación (FR-27)
   const anio = fechaEnBogota(new Date(conv.apertura)).slice(0, 4);
   const contador = await d.db.send(
@@ -88,42 +95,68 @@ export async function radicarSolicitud(e: EntradaRadicar, d: DepsRadicar) {
   );
   const radicado = formatoRadicado(anio, contador.Attributes!.valor as number);
 
-  // 7. Guardar la solicitud con los campos que AppSync exige al leer (R-1)
+  // Campos que AppSync exige al leer un ítem escrito con el SDK (R-1)
   const id = randomUUID();
   const destinos = e.soportes.map((c) => `solicitudes/${id}/${c.split('/').pop()}`);
   const iso = ahora.toISOString();
-  await d.db.send(
-    new PutCommand({
-      TableName: d.tablas.solicitud,
-      Item: {
-        id,
-        __typename: 'Solicitud',
-        radicado,
-        convocatoriaId,
-        tipo: e.tipo,
-        estado: 'RADICADA',
-        owner: e.sub,
-        afiliadoDocumento: afiliado!.documento,
-        afiliadoNombre: afiliado!.nombre,
-        categoria: afiliado!.categoria,
-        beneficiarioDocumento: beneficiario.documento,
-        beneficiarioNombre: beneficiario.nombre,
-        beneficiarioFechaNacimiento: beneficiario.fechaNacimiento,
-        soportes: destinos,
-        devuelta: false,
-        diasMetaAcumulados: 0,
-        inicioConteoMeta: hoy,
-        fechaRadicacion: iso,
-        createdAt: iso,
-        updatedAt: iso,
-        version: 1,
-      },
-      ConditionExpression: 'attribute_not_exists(id)',
-    }),
-  );
+  // 7. TRANSACCIÓN (todo o nada): bloqueo del niño + solicitud (FR-20, NFR-7).
+  //    Si dos padres radican al mismo tiempo, solo una transacción cumple "el bloqueo no existe".
+  try {
+    await d.db.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          {
+            Put: {
+              TableName: d.tablas.control,
+              Item: { pk: bloqueo, solicitudId: id, creado: iso },
+              ConditionExpression: 'attribute_not_exists(pk)',
+            },
+          },
+          {
+            Put: {
+              TableName: d.tablas.solicitud,
+              Item: {
+                id,
+                __typename: 'Solicitud',
+                radicado,
+                convocatoriaId,
+                tipo: e.tipo,
+                estado: 'RADICADA',
+                owner: e.sub,
+                afiliadoDocumento: afiliado!.documento,
+                afiliadoNombre: afiliado!.nombre,
+                categoria: afiliado!.categoria,
+                beneficiarioDocumento: beneficiario.documento,
+                beneficiarioNombre: beneficiario.nombre,
+                beneficiarioFechaNacimiento: beneficiario.fechaNacimiento,
+                soportes: destinos,
+                devuelta: false,
+                diasMetaAcumulados: 0,
+                inicioConteoMeta: hoy,
+                fechaRadicacion: iso,
+                createdAt: iso,
+                updatedAt: iso,
+                version: 1,
+              },
+              ConditionExpression: 'attribute_not_exists(id)',
+            },
+          },
+        ],
+      }),
+    );
+  } catch (error) {
+    if (esBloqueoOcupado(error)) throw new ErrorNegocio(MENSAJE_BENEFICIARIO_CON_SOLICITUD);
+    throw error;
+  }
 
   // 8. Mover los soportes a su carpeta definitiva
   for (let i = 0; i < e.soportes.length; i++) await d.almacen.mover(e.soportes[i], destinos[i]);
 
   return { id, radicado, estado: 'RADICADA' as const, fechaRadicacion: iso };
+}
+
+/** La transacción se canceló porque el PRIMER ítem (el bloqueo) no cumplió la condición. */
+function esBloqueoOcupado(error: unknown): boolean {
+  const e = error as { name?: string; CancellationReasons?: { Code?: string }[] };
+  return e.name === 'TransactionCanceledException' && e.CancellationReasons?.[0]?.Code === 'ConditionalCheckFailed';
 }
