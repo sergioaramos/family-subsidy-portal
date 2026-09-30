@@ -6,12 +6,19 @@ on:
   pull_request:
     branches: [dev, main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: pruebas-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pruebas:
     runs-on: ubuntu-latest
     services:
       dynamodb:
-        image: amazon/dynamodb-local:latest
+        image: amazon/dynamodb-local:3.3.1
         ports:
           - 8000:8000
     steps:
@@ -22,6 +29,10 @@ jobs:
           cache: npm
       # npm ci falla por un defecto de publicación de @aws-amplify/data-construct (plan §7, R-9).
       - run: npm install --no-audit --no-fund
+      - name: Lint
+        run: npm run lint
+      - name: Tipos del backend (amplify/)
+        run: npm run typecheck:backend
       - name: Unidad y contrato
         run: npm test
       - name: Integración (DynamoDB Local)
