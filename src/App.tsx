@@ -1,7 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
-import { Alert, Button, Flex, Heading, Loader, Text } from '@aws-amplify/ui-react';
+import { Button, Flex, Heading, Loader, Text } from '@aws-amplify/ui-react';
 import { PantallaAcceso } from './auth/PantallaAcceso';
 import { useSesion } from './comun/useSesion';
+import { ConfigurarTotp } from './auth/ConfigurarTotp';
 import { AreaAfiliado } from './afiliado/AreaAfiliado';
 import { AreaAnalista } from './analista/AreaAnalista';
 
@@ -23,13 +24,16 @@ function Portal({ signOut }: { signOut?: () => void }) {
           <Button size="small" onClick={signOut}>Cerrar sesión</Button>
         </Flex>
       </Flex>
-      {sesion.requiereMfa && <Alert variation="warning">Debes configurar la verificación en dos pasos (TOTP).</Alert>}
+      {sesion.requiereMfa ? (
+        <ConfigurarTotp correo={sesion.correo} signOut={signOut} />
+      ) : (
       <Routes>
         {esAfiliado && <Route path="/afiliado/*" element={<AreaAfiliado sub={sesion.sub} />} />}
         {esFuncionario && <Route path="/analista/*" element={<AreaAnalista />} />}
         <Route path="/sin-rol" element={<Text>Tu cuenta no tiene un rol asignado.</Text>} />
         <Route path="*" element={<Navigate to={inicio} replace />} />
       </Routes>
+      )}
     </Flex>
   );
 }
