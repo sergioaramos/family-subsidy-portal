@@ -13,15 +13,15 @@
 
 ## F0: Base (setup y pruebas técnicas)
 - [x] T1: Inicializar git en la raíz del proyecto, `.gitignore` (node_modules, `.amplify/`, `amplify_outputs.json`, `.env*`) y crear el repo público `sergioaramos/family-subsidy-portal` con las ramas `main` y `dev`. — _Hecha cuando: `git push` de ambas ramas funciona y gitleaks pasa._ (ref: NFR-12)
-- [ ] T2: Crear el proyecto Vite + React + TypeScript en la raíz. — _Hecha cuando: `npm run dev` muestra la página inicial._ (ref: ADR-11)
-- [ ] T3: `npm create amplify@latest`, agregar `aws-amplify` y `@aws-amplify/ui-react`, y levantar `npx ampx sandbox`. — _Hecha cuando: se genera `amplify_outputs.json` y el stack del sandbox está en CREATE_COMPLETE._ (ref: ADR-1)
-- [ ] T4 [P]: Configurar Vitest con carpetas `tests/unit` y `tests/contract`, y el script `npm test`. — _Hecha cuando: una prueba de humo pasa._ (ref: ADR-13)
-- [ ] T5 [P]: DynamoDB Local con `docker compose` y un helper que crea y limpia las tablas por prueba en `tests/integration`. — _Hecha cuando: una prueba de integración de humo escribe y lee un ítem._ (ref: ADR-13)
-- [ ] T6: **Prueba técnica R-2.** Modelo de prueba con `disableOperations(['mutations','subscriptions'])`. — _Hecha cuando: el esquema desplegado no expone mutaciones del modelo. Resultado anotado en el plan §7 (o se aplica el plan B)._ (ref: ADR-2)
-- [ ] T7: **Prueba técnica R-1.** Escribir un ítem con el SDK usando `owner = sub` y leerlo con el token del dueño mediante `allow.owner().identityClaim('sub')`. — _Hecha cuando: el dueño lo lee y otro usuario no. Resultado anotado en el plan §7._ (ref: ADR-2, FR-29)
-- [ ] T8: **Prueba técnica R-3.** Trigger `preTokenGeneration` que quita los grupos a un funcionario sin TOTP, más la configuración de TOTP en Authenticator. — _Hecha cuando: el funcionario sin TOTP entra sin grupos, configura TOTP y en el siguiente ingreso tiene grupos y se le pide el código. Resultado anotado en el plan §7._ (ref: ADR-7, FR-9)
-- [ ] T9: Borrar los modelos de prueba de T6–T8 y dejar el backend limpio. — _Hecha cuando: el sandbox despliega sin recursos de prueba._
-- [ ] T10: Crear `amplify.yml` con `npm ci`, `npm test` (U, C, I) y `npx ampx pipeline-deploy` en el backend. — _Hecha cuando: si una prueba falla, el build falla._ (ref: ADR-12)
+- [x] T2: Crear el proyecto Vite + React + TypeScript en la raíz. — _Hecha cuando: `npm run dev` muestra la página inicial._ (ref: ADR-11)
+- [x] T3: `npm create amplify@latest`, agregar `aws-amplify` y `@aws-amplify/ui-react`, y levantar `npx ampx sandbox`. — _Hecha cuando: se genera `amplify_outputs.json` y el stack del sandbox está en CREATE_COMPLETE._ (ref: ADR-1)
+- [x] T4 [P]: Configurar Vitest con carpetas `tests/unit` y `tests/contract`, y el script `npm test`. — _Hecha cuando: una prueba de humo pasa._ (ref: ADR-13)
+- [x] T5 [P]: DynamoDB Local con `docker compose` y un helper que crea y limpia las tablas por prueba en `tests/integration`. — _Hecha cuando: una prueba de integración de humo escribe y lee un ítem._ (ref: ADR-13)
+- [x] T6: **Prueba técnica R-2.** Modelo de prueba con `disableOperations(['mutations','subscriptions'])`. — _Hecha cuando: el esquema desplegado no expone mutaciones del modelo. Resultado anotado en el plan §7 (o se aplica el plan B)._ (ref: ADR-2)
+- [x] T7: **Prueba técnica R-1.** Escribir un ítem con el SDK usando `owner = sub` y leerlo con el token del dueño mediante `allow.owner().identityClaim('sub')`. — _Hecha cuando: el dueño lo lee y otro usuario no. Resultado anotado en el plan §7._ (ref: ADR-2, FR-29)
+- [x] T8: **Prueba técnica R-3.** Trigger `preTokenGeneration` que quita los grupos a un funcionario sin TOTP, más la configuración de TOTP en Authenticator. — _Hecha cuando: el funcionario sin TOTP entra sin grupos, configura TOTP y en el siguiente ingreso tiene grupos y se le pide el código. Resultado anotado en el plan §7._ (ref: ADR-7, FR-9)
+- [x] T9: Borrar los modelos de prueba de T6–T8 y dejar el backend limpio. — _Hecha cuando: el sandbox despliega sin recursos de prueba._
+- [x] T10: Crear `amplify.yml` con `npm ci`, `npm test` (U, C) y `npx ampx pipeline-deploy` en el backend, más GitHub Actions con U, C e I (DynamoDB Local como servicio). — _Hecha cuando: si una prueba falla, el build falla._ (ref: ADR-12)
 - [ ] T11: Conectar Amplify Hosting al repo con las ramas `dev` y `main`. — _Hecha cuando: las dos URL responden, cada una con su backend._ (ref: NFR-12)
 
 ## F1: Esqueleto de punta a punta
@@ -31,7 +31,7 @@
 
 ### Registro
 - [ ] T14: Pruebas de integración de `preSignUp`: alta de afiliado activo, rechazo sin autorización, rechazo de inactivo e inexistente. — _Hecha cuando: existen y fallan._ (ref: AC-1, AC-2, AC-3)
-- [ ] T15: `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
+- [ ] T15: *(Adelantada en T9: atributos, grupos y MFA ya definidos; aquí solo se verifica)* `defineAuth` con login por email, `custom:documento` (inmutable), `custom:autorizacionDatos` y los grupos AFILIADO, ANALISTA y COORDINADOR. — _Hecha cuando: el sandbox despliega el user pool con esos atributos y grupos._ (ref: FR-7, FR-8)
 - [ ] T16: Trigger `preSignUp`: valida el core y la aceptación de la autorización. — _Hecha cuando: T14 en verde._ (ref: FR-1, FR-2, FR-3, FR-6)
 - [ ] T17: Trigger `postConfirmation`: agrega al grupo AFILIADO y guarda la versión y fecha de la autorización. — _Hecha cuando: un usuario confirmado queda en AFILIADO con la autorización guardada._ (ref: FR-2, FR-6, FR-7)
 - [ ] T18: `<Authenticator>` con los campos documento y la casilla de autorización de datos. — _Hecha cuando: un registro desde el navegador con el documento 1001 llega al correo de verificación._ (ref: FR-1, FR-4, AC-1)

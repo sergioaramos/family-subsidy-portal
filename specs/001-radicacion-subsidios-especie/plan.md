@@ -316,7 +316,7 @@ README.md                    qué es, arquitectura, cómo correr, decisiones (po
 | **L: Carga** | k6, 10 minutos | NFR-1 y NFR-2 en la rama `dev`, con un perfil de 1.500 radicaciones por hora escalado y acotado para cuidar los créditos | p95, errores 5xx, *throttling* |
 | **M: Manual o revisión** | Checklist | Correo real recibido en SES, auditoría de accesibilidad (Lighthouse/axe), revisión de costos (NFR-3) y de seguridad (agente `security-reviewer`) | Vista en 375 px |
 
-El pipeline de Amplify corre las pruebas U, C e I en `preBuild`; si fallan, no se despliega.
+**Dónde corre cada capa:** Amplify Hosting corre U y C en `preBuild` del backend; si fallan, no despliega. **GitHub Actions** (`.github/workflows/pruebas.yml`) corre U, C, **I** (DynamoDB Local como servicio) y el build en cada push y PR a `dev` y `main`. *Ajuste en T10: el contenedor de build de Amplify no tiene Docker, así que la integración no puede correr ahí.* E y L se corren a mano contra el sandbox o `dev`.
 
 ---
 
@@ -330,7 +330,14 @@ El pipeline de Amplify corre las pruebas U, C e I en `preBuild`; si fallan, no s
 | R-5 | Dependencias circulares entre stacks (funciones de auth y data que usan tablas) | `resourceGroupName` explícito por función; la tabla `Control` en su propio stack |
 | R-6 | Consumo de créditos del Free plan (builds de Hosting, dos ambientes, k6) | Presupuesto de USD 5 con alertas; carga acotada a 10 minutos; `sandbox delete` al cerrar el día |
 | R-7 | Zona horaria o reloj del servidor mal manejados (fechas límite corridas un día) | Todo con `Clock` inyectado y `America/Bogota`; pruebas con fechas fijas (ADR-14) |
-| R-8 | El alcance es grande para el tiempo de preparación | Fases F0–F6: al terminar F1 hay algo demostrable; F2–F5 suben de nivel sin romper lo anterior |
+| R-8 | El alcance es grande para el tiempo disponible | Fases F0–F6: al terminar F1 hay algo demostrable; F2–F5 suben de nivel sin romper lo anterior |
+| R-9 | `npm ci` rechaza el lock: `@aws-amplify/data-construct@1.17.7` empaqueta `plugin-types@1.12.1` sin su dependencia `@aws-cdk/toolkit-lib@1.19.0` (defecto de publicación, sin corrección en la última versión al 2026-09-29) | CI y Amplify usan `npm install --no-audit --no-fund`, que respeta el lock versionado; verificado que un install limpio no lo altera. Volver a `npm ci` cuando Amplify publique la corrección |
+
+### Resultado de las pruebas técnicas (F0)
+- **R-2 confirmada (T6, 2026-09-29):** con `disableOperations(['mutations','subscriptions'])` el esquema desplegado solo expone `get` y `list`; no existen los tipos `Mutation` ni `Subscription`. Se usa tal cual.
+- **R-1 confirmada (T7, 2026-09-29):** un ítem escrito con el SDK con `owner = sub` y `__typename`, `createdAt` y `updatedAt` es legible por su dueño con `allow.owner().identityClaim('sub')` y da `Unauthorized` a otro usuario (y `list` le devuelve 0). Se usa tal cual.
+- **R-3 confirmada (T8, 2026-09-29):** un analista sin TOTP recibe los tokens de acceso e ID **sin grupos** y con `requiere_mfa: "true"`, y AppSync le responde `Unauthorized`. Tras `setUpTOTP` + `verifyTOTPSetup` + `updateMFAPreference(PREFERRED)`, el siguiente ingreso exige `CONFIRM_SIGN_IN_WITH_TOTP_CODE`, y luego los tokens traen `ANALISTA` y la consulta funciona. Se usa tal cual (trigger V1, sin plan B).
+- **Lección de despliegue (confirmada dos veces en T8 y T9):** cambiar el **esquema** de un user pool ya creado (agregar MFA o atributos `custom:`) falla en CloudFormation con "Invalid AttributeDataType input", y obliga a recrear el pool, perdiendo sus usuarios. Por eso MFA, grupos y los atributos `custom:documento` y `custom:autorizacionDatos` se definieron en T9, **antes** del primer despliegue de `dev` y `main` (T11). Cualquier atributo nuevo en el futuro implica migrar usuarios a un pool nuevo.
 
 ## 8. Rollback
 - **Frontend y backend por rama:**
