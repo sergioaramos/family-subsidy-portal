@@ -14,7 +14,7 @@
 ## F0: Base (setup y pruebas técnicas)
 - [x] T1: Inicializar git en la raíz del proyecto, `.gitignore` (node_modules, `.amplify/`, `amplify_outputs.json`, `.env*`) y crear el repo público `sergioaramos/family-subsidy-portal` con las ramas `main` y `dev`. — _Hecha cuando: `git push` de ambas ramas funciona y gitleaks pasa._ (ref: NFR-12)
 - [x] T2: Crear el proyecto Vite + React + TypeScript en la raíz. — _Hecha cuando: `npm run dev` muestra la página inicial._ (ref: ADR-11)
-- [ ] T3: `npm create amplify@latest`, agregar `aws-amplify` y `@aws-amplify/ui-react`, y levantar `npx ampx sandbox`. — _Hecha cuando: se genera `amplify_outputs.json` y el stack del sandbox está en CREATE_COMPLETE._ (ref: ADR-1)
+- [x] T3: `npm create amplify@latest`, agregar `aws-amplify` y `@aws-amplify/ui-react`, y levantar `npx ampx sandbox`. — _Hecha cuando: se genera `amplify_outputs.json` y el stack del sandbox está en CREATE_COMPLETE._ (ref: ADR-1)
 - [ ] T4 [P]: Configurar Vitest con carpetas `tests/unit` y `tests/contract`, y el script `npm test`. — _Hecha cuando: una prueba de humo pasa._ (ref: ADR-13)
 - [ ] T5 [P]: DynamoDB Local con `docker compose` y un helper que crea y limpia las tablas por prueba en `tests/integration`. — _Hecha cuando: una prueba de integración de humo escribe y lee un ítem._ (ref: ADR-13)
 - [ ] T6: **Prueba técnica R-2.** Modelo de prueba con `disableOperations(['mutations','subscriptions'])`. — _Hecha cuando: el esquema desplegado no expone mutaciones del modelo. Resultado anotado en el plan §7 (o se aplica el plan B)._ (ref: ADR-2)
