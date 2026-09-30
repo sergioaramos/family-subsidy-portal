@@ -52,8 +52,8 @@
 - [x] T29: Comando `radicarSolicitud` (router por `fieldName`): consulta al core, reglas, consecutivo `SEQ#`, `HeadObject` y traslado a `solicitudes/<id>/`. — _Hecha cuando: T28 en verde._ (ref: FR-17, FR-27)
 
 ### Frontend del afiliado
-- [ ] T30: Página "Radicar": elegir beneficiario y tipo, subir el certificado y radicar. — _Hecha cuando: la radicación desde el navegador muestra el radicado._ (ref: FR-16, FR-27)
-- [ ] T31: Página "Mis solicitudes" con radicado, tipo, beneficiario, estado y fechas. — _Hecha cuando: el afiliado ve la solicitud recién radicada y no ve las de otros._ (ref: FR-28, FR-29, AC-27)
+- [x] T30: Página "Radicar": elegir beneficiario y tipo, subir el certificado y radicar. — _Hecha cuando: la radicación desde el navegador muestra el radicado._ (ref: FR-16, FR-27)
+- [x] T31: Página "Mis solicitudes" con radicado, tipo, beneficiario, estado y fechas. — _Hecha cuando: el afiliado ve la solicitud recién radicada y no ve las de otros._ (ref: FR-28, FR-29, AC-27)
 
 ### Analista mínimo
 - [ ] T32: Script `scripts/crear-funcionario.ts` (AdminCreateUser + AdminAddUserToGroup). — _Hecha cuando: un analista creado con el script entra y ve la bandeja._ (ref: FR-8, AC-7)
