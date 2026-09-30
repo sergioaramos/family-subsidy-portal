@@ -22,7 +22,7 @@
 - [x] T8: **Prueba técnica R-3.** Trigger `preTokenGeneration` que quita los grupos a un funcionario sin TOTP, más la configuración de TOTP en Authenticator. — _Hecha cuando: el funcionario sin TOTP entra sin grupos, configura TOTP y en el siguiente ingreso tiene grupos y se le pide el código. Resultado anotado en el plan §7._ (ref: ADR-7, FR-9)
 - [x] T9: Borrar los modelos de prueba de T6–T8 y dejar el backend limpio. — _Hecha cuando: el sandbox despliega sin recursos de prueba._
 - [x] T10: Crear `amplify.yml` con `npm ci`, `npm test` (U, C) y `npx ampx pipeline-deploy` en el backend, más GitHub Actions con U, C e I (DynamoDB Local como servicio). — _Hecha cuando: si una prueba falla, el build falla._ (ref: ADR-12)
-- [ ] T11: Conectar Amplify Hosting al repo con las ramas `dev` y `main`. — _Hecha cuando: las dos URL responden, cada una con su backend._ (ref: NFR-12)
+- [x] T11: Conectar Amplify Hosting al repo con las ramas `dev` y `main`. — _Hecha cuando: las dos URL responden, cada una con su backend._ (ref: NFR-12) · **Resultado:** `dev` → https://dev.d2adbber7thoa2.amplifyapp.com · `main` (PRODUCTION) → https://main.d2adbber7thoa2.amplifyapp.com
 
 ## F1: Esqueleto de punta a punta
 ### Core simulado
