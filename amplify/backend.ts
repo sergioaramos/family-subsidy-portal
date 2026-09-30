@@ -1,12 +1,15 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { RemovalPolicy } from 'aws-cdk-lib';
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
+import { consultas } from './functions/consultas/resource';
 
 const backend = defineBackend({
   auth,
   data,
+  consultas,
 });
 
 /** `main` es el ambiente de demostración: sus datos se protegen. Sandbox y dev son desechables. */
@@ -32,6 +35,16 @@ if (esMain) {
     tabla.applyRemovalPolicy(RemovalPolicy.RETAIN);
   }
 }
+
+// ── Permisos de la Lambda consultas ──────────────────────────────────────────────────────────
+// AdminGetUser para resolver el documento del afiliado desde Cognito (no desde el cliente).
+// Se otorga con CDK (data → auth) y NO con `access` en defineAuth (auth → data), que crearía una
+// dependencia circular entre stacks (plan §7, R-5).
+const pool = backend.auth.resources.userPool;
+backend.consultas.addEnvironment('USER_POOL_ID', pool.userPoolId);
+backend.consultas.resources.lambda.addToRolePolicy(
+  new PolicyStatement({ actions: ['cognito-idp:AdminGetUser'], resources: [pool.userPoolArn] }),
+);
 
 // Nombres de tablas para los scripts de operación (sembrar-demo, cargar-festivos).
 // No son secretos: el acceso lo controla IAM, no conocer el nombre.

@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { consultas } from '../functions/consultas/resource';
 
 /**
  * Modelos de SOLO LECTURA (ADR-2, CQRS liviano): la API expone get/list e índices, pero no
@@ -69,6 +70,23 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index('estado').queryField('convocatoriasPorEstado')])
     .disableOperations(['mutations', 'subscriptions'])
     .authorization((allow) => [allow.authenticated().to(['read'])]),
+
+  // ── Consultas personalizadas (datos que no están en un modelo, p. ej. los del core) ──────────
+  BeneficiarioElegible: a.customType({
+    documento: a.string().required(),
+    nombre: a.string().required(),
+    fechaNacimiento: a.date().required(),
+    edad: a.integer().required(),
+    elegibleKit: a.boolean().required(),
+    motivoKit: a.string(),
+  }),
+
+  /** FR-16: hijos del afiliado autenticado según el core. El documento lo resuelve el servidor. */
+  misBeneficiarios: a
+    .query()
+    .returns(a.ref('BeneficiarioElegible').array())
+    .authorization((allow) => [allow.group('AFILIADO')])
+    .handler(a.handler.function(consultas)),
 });
 
 export type Schema = ClientSchema<typeof schema>;
