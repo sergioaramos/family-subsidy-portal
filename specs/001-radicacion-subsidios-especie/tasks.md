@@ -42,8 +42,8 @@
 - [x] T21: Script `scripts/sembrar-demo.ts` que crea una convocatoria ABIERTA de prueba. — _Hecha cuando: la convocatoria aparece en `getConvocatoriaAbierta`._ (ref: FR-12)
 
 ### Radicación mínima (kit escolar)
-- [ ] T22: Pruebas unitarias de dominio: `afiliadoApto` (inactivo, categoría C) y edad del KIT (4, 5, 17, 18). — _Hecha cuando: existen y fallan._ (ref: AC-17, AC-18)
-- [ ] T23: Implementar las reglas de elegibilidad del dominio. — _Hecha cuando: T22 en verde._ (ref: FR-18, FR-19)
+- [x] T22: Pruebas unitarias de dominio: `afiliadoApto` (inactivo, categoría C) y edad del KIT (4, 5, 17, 18). — _Hecha cuando: existen y fallan._ (ref: AC-17, AC-18)
+- [x] T23: Implementar las reglas de elegibilidad del dominio. — _Hecha cuando: T22 en verde._ (ref: FR-18, FR-19)
 - [ ] T24: Prueba de `misBeneficiarios` (el afiliado con dos hijos ve dos). — _Hecha cuando: existe y falla._ (ref: AC-15)
 - [ ] T25: Query `misBeneficiarios` en la Lambda `consultas`. — _Hecha cuando: T24 en verde._ (ref: FR-16)
 - [ ] T26: Prueba de `solicitarCargaSoporte`: el POST prefirmado tiene `content-length-range ≤ 5 MB`, los tipos permitidos y la clave `pendientes/<sub>/…`. — _Hecha cuando: existe y falla._ (ref: AC-25)
