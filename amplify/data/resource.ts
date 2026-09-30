@@ -128,6 +128,33 @@ const schema = a.schema({
     .returns(a.ref('SolicitudRadicada'))
     .authorization((allow) => [allow.group('AFILIADO')])
     .handler(a.handler.function(comandos)),
+
+  // ── Revisión del analista (FR-33 a FR-41) ─────────────────────────────────────────────────
+  ResultadoDecision: a.customType({
+    id: a.id().required(),
+    estado: a.ref('EstadoSolicitud').required(),
+  }),
+
+  tomarSolicitud: a
+    .mutation()
+    .arguments({ id: a.id().required() })
+    .returns(a.ref('ResultadoDecision'))
+    .authorization((allow) => [allow.group('ANALISTA')])
+    .handler(a.handler.function(comandos)),
+
+  aprobarSolicitud: a
+    .mutation()
+    .arguments({ id: a.id().required() })
+    .returns(a.ref('ResultadoDecision'))
+    .authorization((allow) => [allow.group('ANALISTA')])
+    .handler(a.handler.function(comandos)),
+
+  rechazarSolicitud: a
+    .mutation()
+    .arguments({ id: a.id().required(), motivo: a.string().required(), observacion: a.string() })
+    .returns(a.ref('ResultadoDecision'))
+    .authorization((allow) => [allow.group('ANALISTA')])
+    .handler(a.handler.function(comandos)),
 });
 
 export type Schema = ClientSchema<typeof schema>;

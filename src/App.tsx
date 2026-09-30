@@ -29,7 +29,7 @@ function Portal({ signOut }: { signOut?: () => void }) {
       ) : (
       <Routes>
         {esAfiliado && <Route path="/afiliado/*" element={<AreaAfiliado sub={sesion.sub} />} />}
-        {esFuncionario && <Route path="/analista/*" element={<AreaAnalista />} />}
+        {esFuncionario && <Route path="/analista/*" element={<AreaAnalista sub={sesion.sub} />} />}
         <Route path="/sin-rol" element={<Text>Tu cuenta no tiene un rol asignado.</Text>} />
         <Route path="*" element={<Navigate to={inicio} replace />} />
       </Routes>

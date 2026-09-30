@@ -12,6 +12,7 @@ import { crearCore } from '../../shared/adaptadores/fabrica-core';
 import { obtenerDocumento } from '../../shared/adaptadores/perfil-cognito';
 import { AlmacenS3 } from '../../shared/adaptadores/almacen-s3';
 import { radicarSolicitud, type EntradaRadicar } from '../../shared/casos-uso/radicar-solicitud';
+import { aprobarSolicitud, rechazarSolicitud, tomarSolicitud } from '../../shared/casos-uso/revision';
 import type { EventoAmplify } from '../../shared/tipos/evento-amplify';
 
 // Clientes y dependencias FUERA del handler: se reutilizan mientras el contenedor esté caliente.
@@ -48,6 +49,17 @@ export const handler = async (event: EventoAmplify): Promise<unknown> => {
           reloj: () => new Date(),
         },
       );
+    }
+    case 'tomarSolicitud':
+    case 'aprobarSolicitud':
+    case 'rechazarSolicitud': {
+      // El analista es el del TOKEN: nadie puede decidir a nombre de otro.
+      const a = event.arguments as { id: string; motivo?: string; observacion?: string | null };
+      const deps = { db, tablaSolicitud: TABLA_SOLICITUD, reloj: () => new Date() };
+      const base = { sub: event.identity.sub, id: a.id };
+      if (event.fieldName === 'tomarSolicitud') return tomarSolicitud(base, deps);
+      if (event.fieldName === 'aprobarSolicitud') return aprobarSolicitud(base, deps);
+      return rechazarSolicitud({ ...base, motivo: a.motivo ?? '', observacion: a.observacion ?? '' }, deps);
     }
     default:
       throw new Error(`Comando no soportado: ${event.fieldName}`);

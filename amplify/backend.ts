@@ -93,7 +93,8 @@ backend.comandos.resources.lambda.addToRolePolicy(
   new PolicyStatement({ actions: ['dynamodb:GetItem'], resources: [tablaConvocatoria.tableArn] }), // solo leer
 );
 backend.comandos.resources.lambda.addToRolePolicy(
-  new PolicyStatement({ actions: ['dynamodb:PutItem'], resources: [tablaSolicitud.tableArn] }), // solo crear (F1)
+  // Crear (radicar) y actualizar con condición (tomar, aprobar, rechazar). Sin DeleteItem: nada se borra.
+  new PolicyStatement({ actions: ['dynamodb:PutItem', 'dynamodb:UpdateItem'], resources: [tablaSolicitud.tableArn] }),
 );
 
 // Nombres de tablas para los scripts de operación (sembrar-demo, cargar-festivos).
