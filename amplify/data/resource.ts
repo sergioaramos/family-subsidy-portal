@@ -1,5 +1,6 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { consultas } from '../functions/consultas/resource';
+import { comandos } from '../functions/comandos/resource';
 
 /**
  * Modelos de SOLO LECTURA (ADR-2, CQRS liviano): la API expone get/list e índices, pero no
@@ -87,6 +88,27 @@ const schema = a.schema({
     .returns(a.ref('BeneficiarioElegible').array())
     .authorization((allow) => [allow.group('AFILIADO')])
     .handler(a.handler.function(consultas)),
+
+  // ── Comandos (escrituras de negocio, ADR-2) ────────────────────────────────────────────────
+  CargaSoporte: a.customType({
+    url: a.string().required(),
+    /** Campos de la POST prefirmada (JSON): se envían tal cual en el formulario multipart. */
+    campos: a.json().required(),
+    /** Clave S3 donde quedará el archivo; se envía después en radicarSolicitud. */
+    clave: a.string().required(),
+  }),
+
+  /** FR-25/26 (ADR-10): firma una carga directa a S3 con límites que S3 hace cumplir. */
+  solicitarCargaSoporte: a
+    .mutation()
+    .arguments({
+      nombreArchivo: a.string().required(),
+      tipoContenido: a.string().required(),
+      tamanoBytes: a.integer().required(),
+    })
+    .returns(a.ref('CargaSoporte'))
+    .authorization((allow) => [allow.group('AFILIADO')])
+    .handler(a.handler.function(comandos)),
 });
 
 export type Schema = ClientSchema<typeof schema>;

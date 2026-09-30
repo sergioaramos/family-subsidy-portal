@@ -5,11 +5,15 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
 import { consultas } from './functions/consultas/resource';
+import { comandos } from './functions/comandos/resource';
+import { storage } from './storage/resource';
 
 const backend = defineBackend({
   auth,
   data,
+  storage,
   consultas,
+  comandos,
 });
 
 /** `main` es el ambiente de demostración: sus datos se protegen. Sandbox y dev son desechables. */
@@ -44,6 +48,20 @@ const pool = backend.auth.resources.userPool;
 backend.consultas.addEnvironment('USER_POOL_ID', pool.userPoolId);
 backend.consultas.resources.lambda.addToRolePolicy(
   new PolicyStatement({ actions: ['cognito-idp:AdminGetUser'], resources: [pool.userPoolArn] }),
+);
+
+// ── Permisos de la Lambda comandos sobre el bucket de soportes (ADR-10) ─────────────────────
+// Desde el lado de la Lambda (data → storage). Con `access` en defineStorage (storage → data)
+// se formaría un ciclo: la API depende de comandos y comandos depende del bucket.
+const bucket = backend.storage.resources.bucket;
+backend.comandos.addEnvironment('BUCKET_SOPORTES', bucket.bucketName);
+backend.comandos.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    // PutObject: firmar la POST (la firma hereda los permisos de quien firma).
+    // Get/Delete: verificar y mover los soportes al radicar (T29).
+    actions: ['s3:PutObject', 's3:GetObject', 's3:DeleteObject'],
+    resources: [bucket.arnForObjects('pendientes/*'), bucket.arnForObjects('solicitudes/*')],
+  }),
 );
 
 // Nombres de tablas para los scripts de operación (sembrar-demo, cargar-festivos).
