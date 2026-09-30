@@ -39,7 +39,7 @@
 ### Datos
 - [x] T19: Modelos `Solicitud` y `Convocatoria` de solo lectura, con índices `owner + fechaRadicacion` y `estado + fechaRadicacion` y la autorización del plan §3. — _Hecha cuando: el sandbox expone solo queries para esos modelos._ (ref: FR-28, FR-32, ADR-2, ADR-4)
 - [x] T20: Tabla `Control` con CDK en `backend.ts`, variables de entorno con los nombres de las tablas y permisos mínimos por función. — _Hecha cuando: el sandbox despliega y la función `comandos` ve las variables._ (ref: ADR-3, ADR-4) · **Nota:** `comandos` aún no existe; la tabla (TTL, PITR solo en `main`) y los nombres en `amplify_outputs.json` (`custom.tablas`) quedan listos. Variables y permisos por función se verifican en T29.
-- [ ] T21: Script `scripts/sembrar-demo.ts` que crea una convocatoria ABIERTA de prueba. — _Hecha cuando: la convocatoria aparece en `getConvocatoriaAbierta`._ (ref: FR-12)
+- [x] T21: Script `scripts/sembrar-demo.ts` que crea una convocatoria ABIERTA de prueba. — _Hecha cuando: la convocatoria aparece en `getConvocatoriaAbierta`._ (ref: FR-12)
 
 ### Radicación mínima (kit escolar)
 - [ ] T22: Pruebas unitarias de dominio: `afiliadoApto` (inactivo, categoría C) y edad del KIT (4, 5, 17, 18). — _Hecha cuando: existen y fallan._ (ref: AC-17, AC-18)

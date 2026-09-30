@@ -13,7 +13,8 @@
     "test:all": "vitest run",
     "db:up": "docker compose up -d dynamodb",
     "db:down": "docker compose down",
-    "typecheck:backend": "tsc --noEmit -p amplify/tsconfig.json"
+    "typecheck:backend": "tsc --noEmit -p amplify/tsconfig.json",
+    "sembrar": "tsx scripts/sembrar-demo.ts"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.15.6",
