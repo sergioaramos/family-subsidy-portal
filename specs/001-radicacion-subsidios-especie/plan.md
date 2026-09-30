@@ -330,7 +330,8 @@ README.md                    qué es, arquitectura, cómo correr, decisiones (po
 | R-5 | Dependencias circulares entre stacks (funciones de auth y data que usan tablas) | `resourceGroupName` explícito por función; la tabla `Control` en su propio stack |
 | R-6 | Consumo de créditos del Free plan (builds de Hosting, dos ambientes, k6) | Presupuesto de USD 5 con alertas; carga acotada a 10 minutos; `sandbox delete` al cerrar el día |
 | R-7 | Zona horaria o reloj del servidor mal manejados (fechas límite corridas un día) | Todo con `Clock` inyectado y `America/Bogota`; pruebas con fechas fijas (ADR-14) |
-| R-8 | El alcance es grande para el tiempo de preparación | Fases F0–F6: al terminar F1 hay algo demostrable; F2–F5 suben de nivel sin romper lo anterior |
+| R-8 | El alcance es grande para el tiempo disponible | Fases F0–F6: al terminar F1 hay algo demostrable; F2–F5 suben de nivel sin romper lo anterior |
+| R-9 | `npm ci` rechaza el lock: `@aws-amplify/data-construct@1.17.7` empaqueta `plugin-types@1.12.1` sin su dependencia `@aws-cdk/toolkit-lib@1.19.0` (defecto de publicación, sin corrección en la última versión al 2026-09-29) | CI y Amplify usan `npm install --no-audit --no-fund`, que respeta el lock versionado; verificado que un install limpio no lo altera. Volver a `npm ci` cuando Amplify publique la corrección |
 
 ### Resultado de las pruebas técnicas (F0)
 - **R-2 confirmada (T6, 2026-09-29):** con `disableOperations(['mutations','subscriptions'])` el esquema desplegado solo expone `get` y `list`; no existen los tipos `Mutation` ni `Subscription`. Se usa tal cual.
