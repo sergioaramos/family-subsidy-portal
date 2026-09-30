@@ -60,7 +60,7 @@
 - [x] T33: Pruebas de integración: orden de la bandeja, tomar, aprobar KIT, rechazar sin motivo y rechazar con motivo. — _Hecha cuando: existen y fallan._ (ref: AC-32, AC-33, AC-38, AC-40, AC-41)
 - [x] T34: Catálogo de motivos en el dominio y comandos `tomar`, `aprobar` (KIT) y `rechazar`. — _Hecha cuando: T33 en verde._ (ref: FR-32, FR-33, FR-38, FR-41)
 - [x] T35: Páginas "Bandeja" y "Revisión" con tomar, aprobar y rechazar con motivo. — _Hecha cuando: el analista decide una solicitud desde el navegador y el afiliado ve el nuevo estado._ (ref: FR-32, FR-38, FR-41)
-- [ ] T36: Desplegar F1 en `dev` y, con un PR, en `main`. — _Hecha cuando: el flujo feliz completo (registro → radicar → aprobar → consultar) funciona en la URL pública de `main`._ (ref: NFR-12)
+- [x] T36: Desplegar F1 en `dev` y, con un PR, en `main`. — _Hecha cuando: el flujo feliz completo (registro → radicar → aprobar → consultar) funciona en la URL pública de `main`._ (ref: NFR-12)
 
 ## F2: Radicación completa
 - [ ] T37: Pruebas unitarias del computador: categoría A obligatoria y edades 9, 10, 17 y 18. — _Hecha cuando: existen y fallan._ (ref: AC-21, AC-22)
