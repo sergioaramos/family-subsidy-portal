@@ -21,7 +21,7 @@
 - [x] T7: **Prueba técnica R-1.** Escribir un ítem con el SDK usando `owner = sub` y leerlo con el token del dueño mediante `allow.owner().identityClaim('sub')`. — _Hecha cuando: el dueño lo lee y otro usuario no. Resultado anotado en el plan §7._ (ref: ADR-2, FR-29)
 - [x] T8: **Prueba técnica R-3.** Trigger `preTokenGeneration` que quita los grupos a un funcionario sin TOTP, más la configuración de TOTP en Authenticator. — _Hecha cuando: el funcionario sin TOTP entra sin grupos, configura TOTP y en el siguiente ingreso tiene grupos y se le pide el código. Resultado anotado en el plan §7._ (ref: ADR-7, FR-9)
 - [x] T9: Borrar los modelos de prueba de T6–T8 y dejar el backend limpio. — _Hecha cuando: el sandbox despliega sin recursos de prueba._
-- [ ] T10: Crear `amplify.yml` con `npm ci`, `npm test` (U, C, I) y `npx ampx pipeline-deploy` en el backend. — _Hecha cuando: si una prueba falla, el build falla._ (ref: ADR-12)
+- [x] T10: Crear `amplify.yml` con `npm ci`, `npm test` (U, C) y `npx ampx pipeline-deploy` en el backend, más GitHub Actions con U, C e I (DynamoDB Local como servicio). — _Hecha cuando: si una prueba falla, el build falla._ (ref: ADR-12)
 - [ ] T11: Conectar Amplify Hosting al repo con las ramas `dev` y `main`. — _Hecha cuando: las dos URL responden, cada una con su backend._ (ref: NFR-12)
 
 ## F1: Esqueleto de punta a punta

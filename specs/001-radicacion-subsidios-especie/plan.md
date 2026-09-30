@@ -316,7 +316,7 @@ README.md                    qué es, arquitectura, cómo correr, decisiones (po
 | **L: Carga** | k6, 10 minutos | NFR-1 y NFR-2 en la rama `dev`, con un perfil de 1.500 radicaciones por hora escalado y acotado para cuidar los créditos | p95, errores 5xx, *throttling* |
 | **M: Manual o revisión** | Checklist | Correo real recibido en SES, auditoría de accesibilidad (Lighthouse/axe), revisión de costos (NFR-3) y de seguridad (agente `security-reviewer`) | Vista en 375 px |
 
-El pipeline de Amplify corre las pruebas U, C e I en `preBuild`; si fallan, no se despliega.
+**Dónde corre cada capa:** Amplify Hosting corre U y C en `preBuild` del backend; si fallan, no despliega. **GitHub Actions** (`.github/workflows/pruebas.yml`) corre U, C, **I** (DynamoDB Local como servicio) y el build en cada push y PR a `dev` y `main`. *Ajuste en T10: el contenedor de build de Amplify no tiene Docker, así que la integración no puede correr ahí.* E y L se corren a mano contra el sandbox o `dev`.
 
 ---
 
